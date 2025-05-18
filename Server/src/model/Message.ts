@@ -5,11 +5,13 @@ interface IMessage extends Document {
     senderEmail: string;
     text: string;
     user: mongoose.Types.ObjectId | IUser;
+    unread: boolean;
 }
 
 const MessageSchema: Schema<IMessage> = new mongoose.Schema({
     senderEmail: { type: String, required: true },
     text: { type: String, required: true },
+    unread: { type: Boolean, default: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 

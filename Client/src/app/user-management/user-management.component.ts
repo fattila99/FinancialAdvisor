@@ -9,17 +9,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogComponent } from '../shared/dialog/dialog.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatIconModule,  MatDialogModule, MatSnackBarModule],
+  imports: [CommonModule, MatTableModule, MatIconModule,  MatDialogModule, MatSnackBarModule, MatCheckboxModule, FormsModule],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
 })
 export class UserManagementComponent {
   users!: User[];
-  columns = ['email', 'name', 'address', 'nickname', 'delete'];
+  columns = ['email', 'name', 'address', 'isAdvisor', 'delete', 'sendMessage'];
 
   constructor(
     private userService: UserService,
@@ -40,10 +42,28 @@ export class UserManagementComponent {
     });
   }
 
+  updateUser(id: string, isAdvisor: boolean) {
+    this.userService.changeIsAdvisor(id, isAdvisor).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.users = this.users.map((user) => {
+          if (user._id === id) {
+            user.isAdvisor = !user.isAdvisor;
+          }
+          return user;
+        });
+        this.openSnackBar('User updated successfully.', 3000);
+      }, error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
   logout() {
     this.authService.logout().subscribe({
       next: (data) => {
         console.log(data);
+        localStorage.clear();
         this.router.navigateByUrl('/login');
       }, error: (err) => {
         console.log(err);
@@ -74,6 +94,22 @@ export class UserManagementComponent {
         console.log(err);
       }
     })
+  }
+
+  sendMessage(receiverId: string) {
+    const message = 'Please contact me for more information.';
+
+    const senderEmail = this.authService.getCurrentUser().email;
+
+    this.userService.sendMessage(receiverId, senderEmail, message).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.openSnackBar('Message sent successfully.', 3000);
+      }, error: (err) => {
+        console.log(err);
+      }
+    });
+
   }
 
   openSnackBar(message: string, duration: number) {

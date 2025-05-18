@@ -1,4 +1,5 @@
 export interface monthlyPlan {
-  name: string;
+  _id?: string;
+  monthName: string;
   limit: number;
 }

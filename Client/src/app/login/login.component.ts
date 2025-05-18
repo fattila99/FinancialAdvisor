@@ -10,7 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   standalone: true,
   imports: [FormsModule, CommonModule, RouterModule, MatProgressSpinnerModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   email: string = '';
@@ -30,7 +30,13 @@ export class LoginComponent {
             if (data) {
               console.log(data);
               this.isLoading = false;
-              this.router.navigateByUrl('/monthly-plans');
+              //get user role from authService
+              const role = this.authService.getUserRole();
+              if(role === 'admin') {
+                this.router.navigateByUrl('/user-management');
+              }else{
+                this.router.navigateByUrl('/monthly-plans');
+              }
             }
           }, error: (err) => {
             console.log(err);

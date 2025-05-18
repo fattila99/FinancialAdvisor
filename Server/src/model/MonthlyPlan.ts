@@ -8,7 +8,7 @@ export interface IMonthlyPlan extends Document {
 }
 
 const MonthlyPlanSchema: Schema<IMonthlyPlan> = new mongoose.Schema({
-    monthName: { type: String, required: true },
+    monthName: { type: String, required: true, unique: true },
     limit: { type: Number, required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });

@@ -1,0 +1,51 @@
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.responsive-table {
+    width: 100%;
+    min-width: 600px;
+    /* Enough to fit all columns on larger viewports */
+    border-collapse: collapse;
+}
+
+mat-header-cell,
+mat-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 16px;
+}
+
+mat-icon {
+    cursor: pointer;
+}
+
+/* Optional: smaller screens tweaks */
+@media (max-width: 600px) {
+    .responsive-table {
+        min-width: 100%;
+    }
+
+    mat-header-cell,
+    mat-cell {
+        padding: 0 8px;
+        font-size: 12px;
+    }
+}
+
+.item-table-section,
+.add-item-form,
+.summary-section {
+    margin-top: 2rem;
+}
+
+.summary-section p {
+    font-weight: bold;
+}

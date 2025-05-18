@@ -13,11 +13,11 @@ export interface IUser extends Document {
 }
 
 const UserSchema: Schema<IUser> = new mongoose.Schema({
-    email: { type: String, required: true },
-    name: { type: String, required: false },
+    email: { type: String, required: true, unique: true },
+    name: { type: String, required: false, default: false },
     isAdvisor: { type: Boolean, required: true },
     address: { type: String, required: false },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
 });
 
 // hook

@@ -1,43 +1,155 @@
+<div class="buttons">
+  <button type="reset" (click)="logout()">Logout</button>
+</div>
+<h3>Messages</h3>
+
+<!-- print out messages -->
+
+<div class="messages">
+  <div *ngFor="let message of messages" class="message">
+    <p>{{ message }}</p>
+  </div>
+</div>
+
 <div class="table-container" *ngIf="monthlyPlans && monthlyPlans.length; else noPlansTemplate">
-  <table mat-table [dataSource]="monthlyPlans">
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef>Plan name</th>
-      <td mat-cell *matCellDef="let element">{{element.email}}</td>
-    </ng-container>
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="monthlyPlans" class="responsive-table">
 
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>limit</th>
-      <td mat-cell *matCellDef="let element">{{element.name}}</td>
-    </ng-container>
+      <!-- Plan name -->
+      <ng-container matColumnDef="monthName">
+        <th mat-header-cell *matHeaderCellDef>Plan name</th>
+        <td mat-cell *matCellDef="let element">{{element.monthName}}</td>
+      </ng-container>
 
+      <!-- Limit -->
+      <ng-container matColumnDef="limit">
+        <th mat-header-cell *matHeaderCellDef>Limit</th>
+        <td mat-cell *matCellDef="let element">{{element.limit}}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="delete">
-      <th mat-header-cell *matHeaderCellDef>Delete</th>
-      <td mat-cell *matCellDef="let element; let i = index"><mat-icon fontIcon="delete" (click)="deletePlan(element._id, i)"></mat-icon></td>
-    </ng-container>
+      <!-- Delete -->
+      <ng-container matColumnDef="delete">
+        <th mat-header-cell *matHeaderCellDef>Delete</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <mat-icon fontIcon="delete" (click)="deletePlan(element._id, i)"></mat-icon>
+        </td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="columns"></tr>
-    <tr mat-row *matRowDef="let row; columns: columns"></tr>
-  </table>
+      <!-- Edit -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>Select</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <mat-icon fontIcon="edit" (click)="selectPlan(element._id)"></mat-icon>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="selectedPlan; else addPlanSection">
+  <div class="add-item-section">
+    <h3>Edit plan</h3>
+    <form (ngSubmit)="updatePlan()">
+      <mat-form-field appearance="fill">
+        <mat-label>Plan Name</mat-label>
+        <input matInput [(ngModel)]="selectedPlan.monthName" name="name" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Amount</mat-label>
+        <input matInput type="number" [(ngModel)]="selectedPlan.limit" name="limit" required />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">Save plan</button>
+      <button mat-icon-button (click)="selectPlan(undefined)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </form>
+  </div>
+
+  <!-- Items Table -->
+  <div class="item-table-section" *ngIf="selectedPlanItems && selectedPlanItems.length">
+    <h3>Items for "{{ selectedPlan.monthName }}"</h3>
+    <table mat-table [dataSource]="selectedPlanItems" class="responsive-table">
+
+      <!-- Item Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Item Name</th>
+        <td mat-cell *matCellDef="let item">{{ item.name }}</td>
+      </ng-container>
+
+      <!-- Amount Column -->
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>Amount</th>
+        <td mat-cell *matCellDef="let item">{{ item.amount }}</td>
+      </ng-container>
+
+      <!-- Delete Button -->
+      <ng-container matColumnDef="delete">
+        <th mat-header-cell *matHeaderCellDef>Delete</th>
+        <td mat-cell *matCellDef="let item">
+          <button mat-icon-button color="warn" (click)="deleteItem(item._id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="itemColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: itemColumns;"></tr>
+    </table>
+  </div>
+
+  <!-- Add Item Form -->
+  <div class="add-item-form">
+    <h4>Add New Item</h4>
+    <form (ngSubmit)="addItem()">
+      <mat-form-field appearance="fill">
+        <mat-label>Item Name</mat-label>
+        <input matInput [(ngModel)]="newItem.name" name="itemName" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Amount</mat-label>
+        <input matInput type="number" [(ngModel)]="newItem.amount" name="itemAmount" required />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">Add Item</button>
+    </form>
+  </div>
+
+  <!-- Summary Section -->
+  <div class="summary-section">
+    <h4>Summary</h4>
+    <p>Total Income: {{ totalIncome }}</p>
+    <p>Total Spending: {{ totalSpending }}</p>
+    <p>Net: {{ totalIncome - totalSpending }}</p>
+    <p>Remaining Budget: {{ selectedPlan.limit - totalSpending }}</p>
+    <p></p>
+  </div>
 </div>
 
 <ng-template #noPlansTemplate>
   <p>No plans available.</p>
 </ng-template>
 
-<div class="add-item-section">
-  <h3>Add New Item</h3>
-  <form (ngSubmit)="addPlan()">
-    <mat-form-field appearance="fill">
-      <mat-label>Plan Name</mat-label>
-      <input matInput [(ngModel)]="newPlan.name" name="name" required />
-    </mat-form-field>
+<ng-template #addPlanSection>
+  <div class="add-item-section">
+    <h3>Add New Plan</h3>
+    <form (ngSubmit)="addPlan()">
+      <mat-form-field appearance="fill">
+        <mat-label>Plan Name</mat-label>
+        <input matInput [(ngModel)]="newPlan.monthName" name="name" required />
+      </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Amount</mat-label>
-      <input matInput type="number" [(ngModel)]="newPlan.limit" name="limit" required />
-    </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Amount</mat-label>
+        <input matInput type="number" [(ngModel)]="newPlan.limit" name="limit" required />
+      </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit">Add Item</button>
-  </form>
-</div>
+      <button mat-raised-button color="primary" type="submit">Add Plan</button>
+    </form>
+  </div>
+</ng-template>

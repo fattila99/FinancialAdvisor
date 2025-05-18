@@ -15,14 +15,21 @@
       <td mat-cell *matCellDef="let element">{{element.address}}</td>
     </ng-container>
 
-    <ng-container matColumnDef="nickname">
-      <th mat-header-cell *matHeaderCellDef>Nickname</th>
-      <td mat-cell *matCellDef="let element">{{element.nickname}}</td>
+    <ng-container matColumnDef="isAdvisor">
+      <th mat-header-cell *matHeaderCellDef>isAdvisor</th>
+      <td mat-cell *matCellDef="let element">
+        <mat-checkbox [(ngModel)]="element.isAdvisor" (change)="updateUser(element._id, !element.isAdvisor)"></mat-checkbox>
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="delete">
       <th mat-header-cell *matHeaderCellDef>Delete</th>
       <td mat-cell *matCellDef="let element; let i = index"><mat-icon fontIcon="delete" (click)="deleteUser(element._id, i)"></mat-icon></td>
+    </ng-container>
+
+    <ng-container matColumnDef="sendMessage">
+      <th mat-header-cell *matHeaderCellDef>Send Message</th>
+      <td mat-cell *matCellDef="let element; let i = index"><mat-icon fontIcon="message" (click)="sendMessage(element._id)"></mat-icon></td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columns"></tr>

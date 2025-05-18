@@ -68,6 +68,24 @@ export class AuthService {
   }
 
   getCurrentUser() {
-    return JSON.parse(localStorage.getItem('currentUser') || '{}');
+    return !!localStorage.getItem('currentUser') ?  JSON.parse(localStorage.getItem('currentUser')!) : undefined;
+  }
+
+  isLoggedIn() {
+    var isLoggedIn = false;
+    const user = this.getCurrentUser();
+    if (user && user.email) {
+      isLoggedIn = true;
+    }
+    return isLoggedIn;
+  } 
+
+  getUserRole() {
+    const user = this.getCurrentUser();
+    if (user && user.isAdvisor) {
+      return 'admin';
+    } else {
+      return 'user';
+    }
   }
 }

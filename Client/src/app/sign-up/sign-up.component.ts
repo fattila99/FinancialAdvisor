@@ -8,8 +8,8 @@ import { AuthService } from '../shared/services/auth.service';
   selector: 'app-signup',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './signup.component.html',
-  styleUrl: './signup.component.scss'
+  templateUrl: './sign-up.component.html',
+  styleUrl: './sign-up.component.scss'
 })
 export class SignupComponent implements OnInit {
   signupForm!: FormGroup;

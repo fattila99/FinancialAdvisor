@@ -11,7 +11,7 @@ import cors from 'cors';
 
 const app = express();
 const port = 5000;
-const dbUrl = 'mongodb://localhost:6010/my_db';
+const dbUrl = 'mongodb://localhost:6000/my_db';
 
 // mongodb connection
 mongoose.connect(dbUrl).then((_) => {
@@ -42,7 +42,10 @@ app.use(cookieParser());
 const sessionOptions: expressSession.SessionOptions = {
     secret: 'testsecret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+    }
 };
 app.use(expressSession(sessionOptions));
 
