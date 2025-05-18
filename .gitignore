@@ -5,6 +5,5 @@
 /httpRequests/
 
 # Node
-/node_modules
-npm-debug.log
-yarn-error.log
+Client/node_modules/
+Server/node_modules/
